@@ -1,5 +1,10 @@
 const selectedImageDiv = document.getElementById('selectedImage');
 const thumbnailsContainer = document.getElementById('thumbnails');
+const resizeScroller = document.getElementById('resizeScroller');  // Скроллер для изменения масштаба
+const moveUpButton = document.getElementById('moveUp');
+const moveDownButton = document.getElementById('moveDown');
+const moveLeftButton = document.getElementById('moveLeft');
+const moveRightButton = document.getElementById('moveRight');
 const addLayerButton = document.getElementById('addLayer');
 const removeLayerButton = document.getElementById('removeLayer');
 const layerSelectorButton = document.getElementById('layerSelector');
@@ -8,6 +13,7 @@ const layerList = document.getElementById('layerList');
 
 let layerCount = 0;
 let activeLayerIndex = 0;
+let originalPosition = "0px 0px"; // Начальная позиция фона
 const layers = [];
 
 // Функция для загрузки миниатюр
@@ -125,17 +131,15 @@ let originalScale = 1;
 
 // Сохранение изображения через html2canvas
 saveImageButton.addEventListener('click', () => {
-    // Используем html2canvas с параметром useCORS: true
     html2canvas(document.getElementById('selectedImage'), {
-        useCORS: true, // Включаем CORS для изображений
-        logging: true,  // Для отладки
-        allowTaint: true // Разрешаем «загрязнённый» канвас
+        useCORS: true, 
+        logging: true,  
+        allowTaint: true
     }).then(function(canvas) {
-        // Скачиваем картинку
         const link = document.createElement('a');
-        link.download = 'image.png';   // Имя файла
-        link.href = canvas.toDataURL('image/png'); // Преобразуем канвас в PNG
-        link.click();  // Имитируем клик для скачивания
+        link.download = 'image.png';   
+        link.href = canvas.toDataURL('image/png');
+        link.click();  
     }).catch(function(error) {
         console.error("Ошибка при сохранении изображения:", error);
     });       
@@ -147,6 +151,12 @@ resizeImageButton.addEventListener('click', () => {
     resizeControls.classList.remove('hidden');
     resizeImageButton.disabled = true;
     saveImageButton.disabled = true;
+
+    // Сохраняем начальную позицию фона и начальный масштаб
+    if (layers[activeLayerIndex]) {
+        originalPosition = layers[activeLayerIndex].style.backgroundPosition || "0px 0px";
+        originalScale = currentScale;  // Сохраняем начальный масштаб
+    }
 
     // Обработка прокрутки мыши для изменения размера
     selectedImageDiv.addEventListener('wheel', handleResize);
@@ -164,23 +174,70 @@ resizeCancelButton.addEventListener('click', () => {
     resizing = false;
     currentScale = originalScale;
     updateLayerScale(currentScale);
+    console.log(currentScale);
+
+    // Сброс позиции фона на начальную
+    if (layers[activeLayerIndex]) {
+        layers[activeLayerIndex].style.backgroundPosition = originalPosition;
+    } 
+
     resetResizeMode();
 });
 
-// Обновление масштаба слоя
+// Обновление масштаба слоя с учетом центра
 function handleResize(event) {
     if (resizing && layers[activeLayerIndex]) {
         event.preventDefault();
-        currentScale += event.deltaY * -0.001; // Увеличиваем/уменьшаем масштаб
-        currentScale = Math.max(0.1, Math.min(currentScale, 5)); // Ограничиваем масштаб
+        
+        // Получаем текущее положение фона
+        let currentPos = layers[activeLayerIndex].style.backgroundPosition.split(' ');
+        let currentX = parseInt(currentPos[0] || 0, 10);
+        let currentY = parseInt(currentPos[1] || 0, 10);
+        
+        // Если начальный масштаб был сохранен, вычисляем смещение
+        const centerX = selectedImageDiv.offsetWidth / 2;
+        const centerY = selectedImageDiv.offsetHeight / 2;
+
+        // Применяем изменение масштаба
+        currentScale += event.deltaY * -0.001; // Уменьшаем или увеличиваем масштаб
+        currentScale = Math.max(0.1, Math.min(currentScale, 5)); // Ограничиваем диапазон масштаба
+
+        // Вычисляем новые смещения, чтобы центр изображения оставался в центре
+        let newX = centerX - (centerX - currentX) * currentScale / originalScale;
+        let newY = centerY - (centerY - currentY) * currentScale / originalScale;
+
+        // Обновляем стиль фона с новым масштабом и смещением
+        layers[activeLayerIndex].style.backgroundSize = `${currentScale * 100}%`;
+
+        // Обновляем сохраненные значения
+        resizeScroller.value = currentScale;
         updateLayerScale(currentScale);
+        console.log(currentScale);
     }
 }
 
-// Применение масштаба к активному слою
+// Функция обновления масштаба с учетом центра
 function updateLayerScale(scale) {
     if (layers[activeLayerIndex]) {
-        layers[activeLayerIndex].style.transform = `scale(${scale})`;
+        // Получаем текущее положение фона
+        let currentPos = layers[activeLayerIndex].style.backgroundPosition.split(' ');
+        let currentX = parseInt(currentPos[0] || 0, 10);
+        let currentY = parseInt(currentPos[1] || 0, 10);
+
+        // Получаем размеры изображения
+        const centerX = selectedImageDiv.offsetWidth / 2;
+        const centerY = selectedImageDiv.offsetHeight / 2;
+
+        // Вычисляем новые смещения
+        let newX = centerX - (centerX - currentX) * scale / originalScale;
+        let newY = centerY - (centerY - currentY) * scale / originalScale;
+
+        // Обновляем стиль фона с новым масштабом и смещением
+        layers[activeLayerIndex].style.backgroundSize = `${scale * 100}%`;
+
+        // Сохраняем новый масштаб
+        currentScale = scale;
+        console.log(currentScale);
     }
 }
 
@@ -192,3 +249,39 @@ function resetResizeMode() {
     selectedImageDiv.removeEventListener('wheel', handleResize);
 }
 
+// Функция перемещения фона с учетом центра изображения
+function moveBackground(x, y) {
+    if (layers[activeLayerIndex]) {
+        let currentPos = layers[activeLayerIndex].style.backgroundPosition.split(' ');
+        let currentX = parseInt(currentPos[0] || 0, 10);
+        let currentY = parseInt(currentPos[1] || 0, 10);
+
+        // Получаем текущие размеры фона
+        const backgroundWidth = layers[activeLayerIndex].offsetWidth;
+        const backgroundHeight = layers[activeLayerIndex].offsetHeight;
+
+        // Вычисляем смещение для центрирования
+        const centerX = backgroundWidth / 2;
+        const centerY = backgroundHeight / 2;
+
+        // Обновляем смещение с учетом центра
+        let newX = centerX - (centerX - currentX) + x;
+        let newY = centerY - (centerY - currentY) + y;
+
+        // Применяем новое положение фона
+        layers[activeLayerIndex].style.backgroundPosition = `${newX}px ${newY}px`;
+    }
+}
+
+
+// Обработчики для кнопок перемещения
+moveUpButton.addEventListener('click', () => moveBackground(0, -10));
+moveDownButton.addEventListener('click', () => moveBackground(0, 10));
+moveLeftButton.addEventListener('click', () => moveBackground(-10, 0));
+moveRightButton.addEventListener('click', () => moveBackground(10, 0));
+
+// Обработчик для скроллера
+resizeScroller.addEventListener('input', (event) => {
+    const scaleValue = parseFloat(event.target.value); // Получаем текущее значение скроллера
+    updateLayerScale(scaleValue);
+});
