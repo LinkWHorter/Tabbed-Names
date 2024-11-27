@@ -135,6 +135,11 @@ body {
     cursor: pointer;
 }
 
+.layer-popup li div {
+    background-size: 100%;
+    background-position: center;
+}
+
 .layer-popup li img {
     border: 1px solid black;
     width: 50px;
