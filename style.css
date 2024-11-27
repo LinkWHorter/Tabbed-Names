@@ -168,6 +168,8 @@ body {
 
 /* Стиль для блока с миниатюрами */
 #thumbnails {
+    padding-left: 25%;
+    padding-right: 25%;
     display: flex;
     flex-wrap: wrap;
     box-sizing: border-box;
@@ -317,9 +319,11 @@ body {
     }    
 
     #thumbnails {
+        padding-left: 0;
+        padding-right: 0;
         max-height: 300px;
         overflow-y: scroll;
-        gap: 8px;
+        gap: 0px;
         margin: 0;
     }
 
