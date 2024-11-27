@@ -168,13 +168,11 @@ body {
 
 /* Стиль для блока с миниатюрами */
 #thumbnails {
-    padding-left: 25%;
-    padding-right: 25%;
     display: flex;
     flex-wrap: wrap;
     box-sizing: border-box;
     overflow-x: auto; /* Горизонтальная прокрутка */
-    max-width: 100%;  /* Ограничиваем ширину блока */
+    max-width: 300px;  /* Ограничиваем ширину блока */
     max-height: max-content;
     gap: 4px;
     overflow: hidden;
@@ -209,7 +207,7 @@ body {
     position: absolute;
     width: 257px;
     height: 257px;
-    top: 83px;
+    top: 75px;
 }
 
 .move-button {
