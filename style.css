@@ -168,8 +168,8 @@ body {
 
 /* Стиль для блока с миниатюрами */
 #thumbnails {
-    padding-left: 25%;
-    padding-right: 25%;
+    padding-left: 0%;
+    padding-right: 0%;
     display: flex;
     flex-wrap: wrap;
     box-sizing: border-box;
