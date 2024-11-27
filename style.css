@@ -331,3 +331,9 @@ body {
         gap: 15px;
     }
 }
+
+@media (max-width: 320px) {
+    #thumbnails {
+        gap: 0px;
+    }
+}
