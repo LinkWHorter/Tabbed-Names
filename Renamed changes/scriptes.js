@@ -18,7 +18,7 @@ const layers = [];
 
 // Функция для загрузки миниатюр
 function loadThumbnails() {
-    const imageNames = Array.from({ length: 55 }, (_, i) => `img${i + 1}.png`);
+    const imageNames = Array.from({ length: 17 }, (_, i) => `img${i + 1}.png`);
     
     imageNames.forEach(name => {
         const thumb = document.createElement('img');
@@ -65,13 +65,13 @@ function removeLayer() {
 
 // Обновление кнопки выбора слоя с миниатюрой текущего слоя
 function updateLayerSelectorButton() {
-    /*if (layers[activeLayerIndex]) {
+    if (layers[activeLayerIndex]) {
         layerSelectorButton.style.backgroundImage = layers[activeLayerIndex].style.backgroundImage;
         layerSelectorButton.style.backgroundSize = 'cover';
         layerSelectorButton.style.padding = '15px';
     } else {
         layerSelectorButton.style.backgroundImage = '';
-    }*/
+    }
 }
 
 // Обновление списка слоев в всплывающем окне
@@ -275,10 +275,10 @@ function moveBackground(x, y) {
 
 
 // Обработчики для кнопок перемещения
-moveUpButton.addEventListener('click', () => moveBackground(0, -3));
-moveDownButton.addEventListener('click', () => moveBackground(0, 3));
-moveLeftButton.addEventListener('click', () => moveBackground(-3, 0));
-moveRightButton.addEventListener('click', () => moveBackground(3, 0));
+moveUpButton.addEventListener('click', () => moveBackground(0, -10));
+moveDownButton.addEventListener('click', () => moveBackground(0, 10));
+moveLeftButton.addEventListener('click', () => moveBackground(-10, 0));
+moveRightButton.addEventListener('click', () => moveBackground(10, 0));
 
 // Обработчик для скроллера
 resizeScroller.addEventListener('input', (event) => {
