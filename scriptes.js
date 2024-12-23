@@ -31,6 +31,11 @@ presetButton.addEventListener('click', () => {
             layers[activeLayerIndex].style.backgroundSize = '70%';
         }
         else if(layers[activeLayerIndex].style.backgroundPosition === '36px 42px' && layers[activeLayerIndex].style.backgroundSize === '70%') {
+            layers[activeLayerIndex].style.backgroundPosition = '3px 6px';
+            presetButton.textContent = "Bod³";
+            layers[activeLayerIndex].style.backgroundSize = '100%';
+        }
+        else if(layers[activeLayerIndex].style.backgroundPosition === '3px 6px' && layers[activeLayerIndex].style.backgroundSize === '100%') {
             layers[activeLayerIndex].style.backgroundPosition = '0px 0px';
             presetButton.textContent = "Fac⁰";
             layers[activeLayerIndex].style.backgroundSize = '100%';
