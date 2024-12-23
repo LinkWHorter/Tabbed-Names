@@ -264,6 +264,7 @@ body {
 
 #thumbnails img:hover {
     transform: scale(1.15);
+    background-color: rgba(225, 225, 225, 0.821325);
 }
 
 /* Новые стили для добавленных элементов */
