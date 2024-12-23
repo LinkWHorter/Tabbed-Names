@@ -8,6 +8,7 @@ const moveRightButton = document.getElementById('moveRight');
 const addLayerButton = document.getElementById('addLayer');
 const removeLayerButton = document.getElementById('removeLayer');
 const layerSelectorButton = document.getElementById('layerSelector');
+const button = document.getElementById('toggleButton');
 const presetButton = document.getElementById('presetButton');
 const layerPopup = document.getElementById('layerPopup');
 const layerList = document.getElementById('layerList');
@@ -50,6 +51,22 @@ function loadThumbnails() {
         const thumb = document.createElement('img');
         thumb.src = `imags/icons/${name}`;
         thumb.alt = name;
+        thumb.addEventListener('mouseenter', () => {
+            // Apply the scale and background-color on hover
+            thumb.style.transform = 'scale(1.15)';
+            thumb.style.backgroundColor = 'rgba(225, 225, 225, 0.821325)';
+        });
+        thumb.addEventListener('mouseleave', () => {
+            // Revert the styles when the hover effect ends
+            if (button.textContent == 'On') {
+                thumb.style.transform = 'scale(1)';
+                thumb.style.backgroundColor = 'rgba(225, 225, 225, 0.5)'; // Remove the background color
+            }
+            if (button.textContent == 'Off') {
+                thumb.style.transform = 'scale(1)';
+                thumb.style.backgroundColor = 'rgba(225, 225, 225, 0.2)'; // Remove the background color
+            }
+        });
 
         thumb.addEventListener('click', () => {
             if (layerCount == 0) {
@@ -95,7 +112,6 @@ function loadThumbnails() {
 function toggleThumbnailStyles() {
     const thumbnails = document.querySelectorAll('#thumbnails img');
     const textOverlays = document.querySelectorAll('#thumbnails span');
-    const button = document.getElementById('toggleButton');
 
     if (button.textContent === 'Off') {
         // Устанавливаем стили "Off"
