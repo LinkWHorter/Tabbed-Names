@@ -81,7 +81,7 @@ function loadThumbnails() {
             }
             if (layers[activeLayerIndex]) {
                 layers[activeLayerIndex].style.backgroundImage = `url('imags/${name}')`;
-                updateLayerSelectorButton();
+                updateLayerSelectorPresettes();
                 updateLayerList(); // Обновляем список слоев в попапе после выбора миниатюры
             }
         });
@@ -193,7 +193,7 @@ function removeLayer() {
 }
 
 // Обновление кнопки выбора слоя с миниатюрой текущего слоя
-function updateLayerSelectorButton() {
+function updateLayerSelectorPresettes() {
     presetButton.textContent = "Fac";
     /*if (layers[activeLayerIndex]) {
         layerSelectorButton.style.backgroundImage = layers[activeLayerIndex].style.backgroundImage;
@@ -232,14 +232,14 @@ function updateLayerList() {
         layerList.appendChild(listItem);
     });
 
-    updateLayerSelectorButton();
+    updateLayerSelectorPresettes();
 }
 
 // Функция для выбора активного слоя
 function selectLayer(index) {
     activeLayerIndex = index;
     layerSelectorButton.textContent = `${index + 1}`;
-    updateLayerSelectorButton();
+    updateLayerSelectorPresettes();
 }
 
 // Показать/скрыть всплывающее окно выбора слоя
@@ -274,7 +274,12 @@ saveImageButton.addEventListener('click', () => {
         const link = document.createElement('a');
         link.download = 'image.png';   
         link.href = canvas.toDataURL('image/png');
-        link.click();  
+        link.click(); 
+        
+        // Опционально можно очистить ссылку для повторного использования
+        setTimeout(() => {
+            link.remove();
+        }, 100); // Убираем ссылку после краткой задержки
     }).catch(function(error) {
         console.error("Ошибка при сохранении изображения:", error);
     });       
