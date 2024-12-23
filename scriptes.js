@@ -22,10 +22,13 @@ function loadThumbnails() {
     
     imageNames.forEach(name => {
         const thumb = document.createElement('img');
-        thumb.src = `imags/${name}`;
+        thumb.src = `imags/icons/${name}`;
         thumb.alt = name;
 
         thumb.addEventListener('click', () => {
+            if (layerCount == 0) {
+                addLayer();
+            }
             if (layers[activeLayerIndex]) {
                 layers[activeLayerIndex].style.backgroundImage = `url('imags/${name}')`;
                 updateLayerSelectorButton();
@@ -61,6 +64,9 @@ function removeLayer() {
         updateLayerList();
         selectLayer(activeLayerIndex);
     }
+    if (layerCount == 0) {
+        layerSelectorButton.textContent = "0";
+    }
 }
 
 // Обновление кнопки выбора слоя с миниатюрой текущего слоя
@@ -73,6 +79,11 @@ function updateLayerSelectorButton() {
         layerSelectorButton.style.backgroundImage = '';
     }*/
 }
+
+thumbnailsContainer.addEventListener("scroll", function () {
+    const scrollTop = thumbnailsContainer.scrollTop; // Текущее значение прокрутки дива
+    thumbnailsContainer.style.backgroundPosition = `0 ${-scrollTop * 1}px`; // Обновляем позицию фона
+});
 
 // Обновление списка слоев в всплывающем окне
 function updateLayerList() {
@@ -155,7 +166,7 @@ resizeImageButton.addEventListener('click', () => {
     // Сохраняем начальную позицию фона и начальный масштаб
     if (layers[activeLayerIndex]) {
         originalPosition = layers[activeLayerIndex].style.backgroundPosition || "0px 0px";
-        originalScale = currentScale;  // Сохраняем начальный масштаб
+        originalScale = currentScale;
     }
 
     // Обработка прокрутки мыши для изменения размера
@@ -236,6 +247,7 @@ function updateLayerScale(scale) {
         layers[activeLayerIndex].style.backgroundSize = `${scale * 100}%`;
 
         // Сохраняем новый масштаб
+        resizeScroller.value = currentScale;
         currentScale = scale;
         console.log(currentScale);
     }

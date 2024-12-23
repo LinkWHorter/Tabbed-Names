@@ -62,6 +62,7 @@ body {
 .image {
     position: relative; /* Устанавливаем контейнер для абсолютного позиционирования слоев */
     width: 250px;
+    transition: background-image 0.2s;
     background-color: rgba(225, 225, 225, 0.2);
     height: 250px;
     overflow: hidden;
@@ -171,6 +172,12 @@ body {
     padding-left: 0%;
     padding-right: 0%;
     display: flex;
+    background-image: url("imags/assets/ofye-body-thumb.png");
+    background-repeat: no-repeat;
+    background-size: cover; /* Растянуть фоновую картинку */
+    background-position: 0 0; /* Начальная позиция фона */
+    background-attachment: scroll; /* Привязка фона к содержимому */
+    background-size: 100% 100%;
     flex-wrap: wrap;
     box-sizing: border-box;
     overflow-x: auto; /* Горизонтальная прокрутка */
@@ -323,6 +330,7 @@ body {
         padding-right: 0;
         max-height: 300px;
         overflow-y: scroll;
+        background-size: 92% 173.52321375%;
         gap: 0px;
         margin: 0;
     }
