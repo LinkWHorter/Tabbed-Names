@@ -8,6 +8,7 @@ const moveRightButton = document.getElementById('moveRight');
 const addLayerButton = document.getElementById('addLayer');
 const removeLayerButton = document.getElementById('removeLayer');
 const layerSelectorButton = document.getElementById('layerSelector');
+const presetButton = document.getElementById('presetButton');
 const layerPopup = document.getElementById('layerPopup');
 const layerList = document.getElementById('layerList');
 
@@ -16,11 +17,36 @@ let activeLayerIndex = 0;
 let originalPosition = "0px 0px"; // Начальная позиция фона
 const layers = [];
 
+// Проверяем, был ли уже введен правильный пароль
+const isPasswordEntered = localStorage.getItem('passwordEntered');
+localStorage.setItem('passwordEntered', 'false');
+
+// Функция для применения пресета
+presetButton.addEventListener('click', () => {
+    if (layers[activeLayerIndex]) {
+        if(layers[activeLayerIndex].style.backgroundPosition === '30px -3px' && layers[activeLayerIndex].style.backgroundSize === '70%') {
+            layers[activeLayerIndex].style.backgroundPosition = '0px 0px';
+            layers[activeLayerIndex].style.backgroundSize = '100%';
+        }
+        else {
+            layers[activeLayerIndex].style.backgroundPosition = '30px -3px';
+            layers[activeLayerIndex].style.backgroundSize = '70%';
+        }
+    }
+});
+
 // Функция для загрузки миниатюр
 function loadThumbnails() {
     const imageNames = Array.from({ length: 55 }, (_, i) => `img${i + 1}.png`);
     
+    const columns = 5; // Количество элементов в строке
+    let row = 1, col = 1;
+
     imageNames.forEach(name => {
+        // Создаем контейнер для изображения и текста
+        const thumbWrapper = document.createElement('div');
+        thumbWrapper.style.position = 'relative';
+
         const thumb = document.createElement('img');
         thumb.src = `imags/icons/${name}`;
         thumb.alt = name;
@@ -36,9 +62,82 @@ function loadThumbnails() {
             }
         });
 
-        thumbnailsContainer.appendChild(thumb);
+        // Создаем текст поверх изображения
+        const textOverlay = document.createElement('span');
+        textOverlay.textContent = `${row}.${col}`;
+        textOverlay.style.position = 'absolute';
+        textOverlay.style.top = '50%';
+        textOverlay.style.left = '50%';
+        textOverlay.style.transform = 'translate(-50%, -50%)';
+        textOverlay.style.color = 'black';
+        textOverlay.style.fontWeight = 'bold';
+        textOverlay.style.fontSize = '14px';
+        textOverlay.style.pointerEvents = 'none';
+        textOverlay.style.display = 'none'; // По умолчанию скрыт
+
+        // Добавляем элементы в контейнер
+        thumbWrapper.appendChild(thumb);
+        thumbWrapper.appendChild(textOverlay);
+        thumbnailsContainer.appendChild(thumbWrapper);
+
+        // Увеличиваем колонки и строки
+        col++;
+        if (col > columns) {
+            col = 1;
+            row++;
+        }
+
+        toggleThumbnailStyles();
     });
 }
+
+// Функция для переключения стилей
+function toggleThumbnailStyles() {
+    const thumbnails = document.querySelectorAll('#thumbnails img');
+    const textOverlays = document.querySelectorAll('#thumbnails span');
+    const button = document.getElementById('toggleButton');
+
+    if (button.textContent === 'Off') {
+        // Устанавливаем стили "Off"
+        thumbnails.forEach(thumb => {
+            thumb.style.backgroundColor = 'rgba(225, 225, 225, 0.5)';
+            thumb.style.filter = 'blur(10px)';
+            thumb.style.clipPath = 'inset(1px)';
+        });
+        textOverlays.forEach(text => {
+            text.style.display = 'block'; // Показываем текст
+        });
+        thumbnailsContainer.style.backgroundImage = 'none';
+        button.textContent = 'On';
+    } else {
+        // Устанавливаем стили "On"
+        thumbnails.forEach(thumb => {
+            thumb.style.backgroundColor = 'rgba(225, 225, 225, 0.2)';
+            thumb.style.filter = 'none';
+            thumb.style.clipPath = 'none';
+        });
+        textOverlays.forEach(text => {
+            text.style.display = 'none'; // Показываем текст
+        });
+        thumbnailsContainer.style.backgroundImage = 'url("imags/assets/ofye-body-thumb.png")';
+        button.textContent = 'Off';
+    }
+}
+
+// Проверяем, был ли уже введен правильный пароль при нажатии на кнопку
+document.getElementById('toggleButton').addEventListener('click', () => {
+    // Если пароль ещё не введён, запрашиваем его
+    if (localStorage.getItem('passwordEntered') === 'false') {
+        const password = prompt('Введите пароль:');
+        if (password === 'abc') {
+            localStorage.setItem('passwordEntered', 'true'); // Сохраняем информацию о том, что пароль введён
+            toggleThumbnailStyles();  // Переключаем режим
+        }
+    } else {
+        // Если пароль уже введён, просто переключаем режим
+        toggleThumbnailStyles();  // Переключаем режим
+    }
+});
 
 // Функция для добавления слоя
 function addLayer() {

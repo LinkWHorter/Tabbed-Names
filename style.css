@@ -77,7 +77,7 @@ body {
     margin-bottom: 10px;
 }
 
-#saveImage, #resizeImage, #resizeControls button {
+#saveImage, #resizeImage, #toggleButton, #presetButton, #resizeControls button {
     margin: 5px;
     padding: 10px;
     font-size: 16px;
@@ -256,8 +256,10 @@ body {
     height: 38.295px;
     cursor: pointer;
     transform: scale(1);
-    background-color: rgba(225, 225, 225, 0.2);
+    background-color: rgba(225, 225, 225, 0.5);
     border-radius: 4px;
+    filter: blur(10px);
+    clip-path: inset(1px);
     transition: transform 0.2s ease;
     border: 1px solid black;
 }
