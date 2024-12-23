@@ -256,7 +256,7 @@ body {
     height: 38.295px;
     cursor: pointer;
     transform: scale(1);
-    background-color: rgba(225, 225, 225, 0.2);
+    background-color: rgba(198, 198, 198, 0.52);
     border-radius: 4px;
     transition: transform 0.2s ease;
     border: 1px solid black;
@@ -264,7 +264,7 @@ body {
 
 #thumbnails img:hover {
     transform: scale(1.15);
-    background-color: rgba(225, 225, 225, 0.821325);
+    background-color: rgba(173, 173, 173, 0.821325);
 }
 
 /* Новые стили для добавленных элементов */
