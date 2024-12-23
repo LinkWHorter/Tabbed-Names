@@ -27,17 +27,17 @@ presetButton.addEventListener('click', () => {
     if (layers[activeLayerIndex]) {
         if(layers[activeLayerIndex].style.backgroundPosition === '30px -3px' && layers[activeLayerIndex].style.backgroundSize === '70%') {
             layers[activeLayerIndex].style.backgroundPosition = '36px 42px';
-            presetButton.textContent = "Bod";
+            presetButton.textContent = "Bod²";
             layers[activeLayerIndex].style.backgroundSize = '70%';
         }
         else if(layers[activeLayerIndex].style.backgroundPosition === '36px 42px' && layers[activeLayerIndex].style.backgroundSize === '70%') {
             layers[activeLayerIndex].style.backgroundPosition = '0px 0px';
-            presetButton.textContent = "Fac";
+            presetButton.textContent = "Fac⁰";
             layers[activeLayerIndex].style.backgroundSize = '100%';
         }
         else {
             layers[activeLayerIndex].style.backgroundPosition = '30px -3px';
-            presetButton.textContent = "Fac";
+            presetButton.textContent = "Fac¹";
             layers[activeLayerIndex].style.backgroundSize = '70%';
         }
     }
@@ -165,7 +165,7 @@ document.getElementById('toggleButton').addEventListener('click', () => {
 // Функция для добавления слоя
 function addLayer() {
     const newLayer = document.createElement('div');
-    presetButton.textContent = "Fac";
+    presetButton.textContent = "Fac⁰";
     newLayer.classList.add('layer');
     newLayer.style.zIndex = layerCount + 1;
     selectedImageDiv.appendChild(newLayer);
@@ -194,7 +194,7 @@ function removeLayer() {
 
 // Обновление кнопки выбора слоя с миниатюрой текущего слоя
 function updateLayerSelectorPresettes() {
-    presetButton.textContent = "Fac";
+    presetButton.textContent = "Fac⁰"; 
     /*if (layers[activeLayerIndex]) {
         layerSelectorButton.style.backgroundImage = layers[activeLayerIndex].style.backgroundImage;
         layerSelectorButton.style.backgroundSize = 'cover';
