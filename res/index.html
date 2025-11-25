@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Posts</title>
+    <style>
+        body {
+            background-color: #979797;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .post {
+            width: 80%;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #c9c9c9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        .name {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .divider {
+            width: 83%;
+            height: 1px;
+            background-color: #9f9f9f;
+            margin-top: -12px;
+            margin-left: 55px;
+            margin-bottom: 15px;
+        }
+        .images {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        #h3-to-saver-talio {
+            text-align: center;
+            padding: 10px 5px 3px 10px;
+            margin: 0 auto;
+        }
+        span {
+            font-weight: 150;
+        }
+        .images img {
+            max-width: 100px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1 id="h3-to-saver-talio">Тотемы по выбранным ответам на задания: <span>итоги</span></h3>
+    <h3 id="h3-to-saver-talio">Темы: <span>лето; космос; параллельные миры</span></h3>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        const names = ["Влад Лапенко", "Женя Des", "Лерана", "Аура", "𝕯𝖆𝖛𝖎𝖓𝖆❦𝖝𝖅𝖜𝖎𝖙𝖙𝖊𝖗", "[`al]אעט", "𓆩✞☭꧁☽𝓛𝓾𝓝𝓪☾꧂☭✞𓆪🌙💚", "mar008🐠", "˖°ItzDrakon4ik˖𖹭°", "iwiwiw𓃵", "!¿ | “Fleisch¹⁹⁹⁴ ☥", "Кыᴩ Сᴏᴄичᴋᴀ", "ɪ ᴛʜɪɴᴋ ɪ'ᴍ ꜱᴇᴇɪɴɢ ɢʜᴏꜱᴛꜱ ᴀɢᴀɪɴ ...", "ʀᴀᴠᴇɴ 🖤", "HOND | 𓃵 | #xZwitter"];
+
+        let saveImageButton = document.getElementById("h3-to-saver-talio");
+
+        // Обработчик для нажатия на клавишу E
+        saveImageButton.addEventListener('click', () => {
+            // Используем html2canvas для захвата скриншота всего body
+            html2canvas(document.body, {
+                useCORS: true, 
+                logging: true,  
+                allowTaint: true
+            }).then(function(canvas) {
+                const link = document.createElement('a');
+                link.download = 'image.png';   
+                link.href = canvas.toDataURL('image/png');
+                link.click(); 
+                
+                // Опционально можно очистить ссылку для повторного использования
+                setTimeout(() => {
+                    link.remove();
+                }, 100); // Убираем ссылку после краткой задержки
+            }).catch(function(error) {
+                console.error("Ошибка при сохранении изображения:", error);
+            });       
+        });
+
+        function createPost(id, name) {
+            const post = document.createElement('div');
+            post.className = 'post';
+            post.id = `post-${id}`;
+
+            // Header with avatar and name
+            const header = document.createElement('div');
+            header.className = 'post-header';
+
+            const avatar = new Image();
+            avatar.className = 'avatar';
+            avatar.src = `images/avess/${id}.jpg`;
+            avatar.onerror = () => avatar.remove(); // Удаляем аватар, если он не существует
+            avatar.onerror = () => post.remove(); // Удаляем пост, если аватарки нету
+            header.appendChild(avatar);
+
+            const nameBlock = document.createElement('div');
+            nameBlock.className = 'name';
+            nameBlock.textContent = name;
+
+            header.appendChild(nameBlock);
+            post.appendChild(header);
+
+            // Divider
+            const divider = document.createElement('div');
+            divider.className = 'divider';
+            post.appendChild(divider);
+
+            // Images block
+            const imagesBlock = document.createElement('div');
+            imagesBlock.className = 'images';
+            post.appendChild(imagesBlock);
+
+            // Асинхронная загрузка всех изображений
+            let imgIndex = 1;
+            function loadNextImage() {
+                const img = new Image();
+                img.src = `images/eyeltotems/${id} ${imgIndex}.jpg`;
+                img.onload = () => {
+                    imagesBlock.appendChild(img);
+                    imgIndex++;
+                    loadNextImage(); // Загружаем следующее изображение
+                };
+                img.onerror = () => {
+                    // Завершение цикла при отсутствии следующего изображения
+                    if (imgIndex === 1 && imagesBlock.childElementCount === 0) {
+                        console.warn(`Нет изображений для поста ${id}`);
+                    }
+                };
+            }
+            loadNextImage();
+
+            document.body.appendChild(post);
+        }
+
+        names.forEach((name, index) => {
+            const id = index + 1;
+            createPost(id, name);
+        });
+    </script>
+</body>
+</html>
